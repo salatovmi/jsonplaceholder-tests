@@ -21,7 +21,7 @@ public class ResponseHandler {
 
     /*
     Method iterates through Map of keys and responses and checks that each response has Status Code 200.
-    Returns List of keys linked with responses have wrong Status Code.
+    Returns List of keys linked with responses having wrong Status Code.
      */
     public static <K> List<K> checkAllResponsesHaveStatus200(Map<K, Response> responsesMap) {
         ArrayList<K> invalidKeys = new ArrayList<>();

@@ -46,13 +46,13 @@ public class CommentsValidatorTest {
         assertTrue(String.format("User Response Status isn't 200 for UserName = %s.", userName), checkResponseHasStatus200(res));
 
         assertFalse(String.format("User with UserName = %s doesn't exist.", userName), isEmpty(res));
-
+        System.out.printf("Request for %s user is successful. Response status code is 200. \n", userName);
         User delphine = User.getUserFromJson(getJsonPath(res));
         res = Post.getPostsByUserID(delphine.getId());
         assertTrue("Post Response Status isn't 200.", checkResponseHasStatus200(res));
 
         assertFalse(String.format("User %s doesn't have any Posts", userName), isEmpty(res));
-
+        System.out.printf("User %s has posts. Response status code is 200. \n", userName);
         List<Post> posts = Post.getListOfPostsFromJson(getJsonPath(res));
         posts.parallelStream().map(Post::getId).forEach(postId -> commentResponses.put(postId, Comment.getCommentsByPostID(postId)));
         List<Integer> badPostIds = checkAllResponsesHaveStatus200(commentResponses);
@@ -64,13 +64,14 @@ public class CommentsValidatorTest {
                 map(resp -> Comment.getListOfCommentsFromJson(getJsonPath(resp))).
                 forEach(comments::addAll);
         assertNotEquals(String.format("%s's posts don't have comments.", userName),0, comments.size());
-
+        System.out.printf("%s's posts have comments. Response status code is 200. \n", userName);
         List<String> emails = new ArrayList<>();
         comments.parallelStream().map(Comment::getEmail).forEach(emails::add);
         List<String> invalidEmails = emails.parallelStream().
                 filter(email -> !FieldValidator.isEmailValid(email)).
                 collect(Collectors.toList());
         assertEquals("Next emails are invalid:\n" + invalidEmails, 0, invalidEmails.size());
+        System.out.println("All emails in comments are valid.");
     }
 
     //Reset Base URI
